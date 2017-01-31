@@ -2,7 +2,7 @@
 
 -----------------
 ##Arborescence du projet :
-####Veuillez installer sur un périphérique (SD, USB, Disque dur) l'arborescence du projet contenue dans tree/project.zip
+####Veuillez installer sur un périphérique (SD, USB, Disque dur) l'arborescence du projet fournie
 
 ###Logiciels pré-installés :
 
