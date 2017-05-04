@@ -16,7 +16,7 @@ cadencement = 0
 dureePriseVue = 0
 rotation = 0
 
-while (etatCamera != 2):
+while (True):
     print("")
     print("")
     print("")
@@ -58,7 +58,7 @@ while (etatCamera != 2):
                 print("")
                 try: # On essaye de convertir la chaine de caractères en entier
                     cadencementVerif = int(cadencementVerif)
-                    assert cadencementVerif >= 0 and cadencementVerif <= 3600000 # Cadencement compris entre 10min et 1h
+                    assert cadencementVerif >= 600000 and cadencementVerif <= 3600000 # Cadencement compris entre 10min et 1h
                 except NameError:
                     print("La valeur du cadencement n'a pas été définie, veuillez réessayer.")
                     etatBoucle = False
@@ -142,6 +142,7 @@ while (etatCamera != 2):
                     print("")
 
                     if validerRot:
+                        # L'utilisateur valide ou non la rotation, si la réponse est négative, il recommence la boucle du Menu 3
                         try:
                             assert validerRot == "O" or validerRot == "N"
                         except NameError:
@@ -193,14 +194,22 @@ while (etatCamera != 2):
                             print("Lancement du Time-Lapse...")
                             print("")
                             time.sleep(3)
+                            # On monte les systèmes de fichiers pour pouvoir accéder à un chemin fixe afin d'enregistrer les images sur la clé USB
+                            # Le dossier mnt/ présent à la racine de l'OS Raspbian et des distributions Linux en général est spécialement conçu pour le montage de systèmes de fichiers 
+                            # Ne pouvant pas prédire le nom de la partition de la clé USB, on essaye les principales en oubliant pas de toutes les démonter proprement en quittant le programme
                             subprocess.Popen("sudo mkdir /mnt/clefusb", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
+                            subprocess.Popen("sudo mount /dev/sda /mnt/clefusb", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
                             subprocess.Popen("sudo mount /dev/sda1 /mnt/clefusb", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
+                            subprocess.Popen("sudo mount /dev/sdb /mnt/clefusb", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
                             subprocess.Popen("sudo mount /dev/sdb1 /mnt/clefusb", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
+                            subprocess.Popen("sudo mount /dev/sdc /mnt/clefusb", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
                             subprocess.Popen("sudo mount /dev/sdc1 /mnt/clefusb", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
+                            subprocess.Popen("sudo mount /dev/sdd /mnt/clefusb", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
                             subprocess.Popen("sudo mount /dev/sdd1 /mnt/clefusb", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
                             subprocess.Popen("sudo mkdir /mnt/clefusb/timelapse", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
                             time.sleep(3)
-                            subprocess.Popen("raspistill -t " + str(dureePriseVue) + " -tl " + str(cadencement) + " -o /mnt/clefusb/timelapse/%05d.jpg -q 100 -n -rot " + str(rotation), stdout=subprocess.PIPE, shell=True, universal_newlines=True)
+                            subprocess.Popen("raspistill -t " + str(dureePriseVue) + " -tl " + str(cadencement) + " -o /mnt/clefusb/timelapse/%05d.jpg -q 100 -n -rot "
+                                             + str(rotation), stdout=subprocess.PIPE, shell=True, universal_newlines=True)
                         etatBoucle = True
                 
                 # Arrêt   
@@ -223,6 +232,7 @@ while (etatCamera != 2):
                         print("L'état saisi est incorrect, veuillez réessayer.")
                         etatBoucle = False
                     else:
+                        #Même si il est possible de créer une seule condition, diviser les deux étapes permet de comprendre plus rapidement au survol
                         if etatCameraVerif == "O":
                             etatCamera = 0
                         
@@ -230,6 +240,7 @@ while (etatCamera != 2):
                             print("")            
                             print("Arrêt du Time-Lapse...")
                             print("")
+                            subprocess.Popen("pkill raspistill", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
                             time.sleep(3)
                         etatBoucle = True
                         
@@ -262,12 +273,13 @@ while (etatCamera != 2):
                         print("")            
                         print("Arrêt du système...")
                         print("")
+                        # On force l'arrêt de la caméra si ce n'est pas déjà fait puis on démonte les systèmes de fichiers
                         subprocess.Popen("pkill raspistill", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
                         subprocess.Popen("sudo umount /dev/sda1", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
                         subprocess.Popen("sudo umount /dev/sdb1", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
                         subprocess.Popen("sudo umount /dev/sdc1", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
                         subprocess.Popen("sudo umount /dev/sdd1", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
-                        sys.exit(0)
+                        sys.exit(0) # On arrête le programme
                         
                     etatBoucle = True
     
