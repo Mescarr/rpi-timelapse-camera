@@ -275,9 +275,13 @@ while (True):
                         print("")
                         # On force l'arrêt de la caméra si ce n'est pas déjà fait puis on démonte les systèmes de fichiers
                         subprocess.Popen("pkill raspistill", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
+                        subprocess.Popen("sudo umount /dev/sda", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
                         subprocess.Popen("sudo umount /dev/sda1", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
+                        subprocess.Popen("sudo umount /dev/sdb", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
                         subprocess.Popen("sudo umount /dev/sdb1", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
+                        subprocess.Popen("sudo umount /dev/sdc", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
                         subprocess.Popen("sudo umount /dev/sdc1", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
+                        subprocess.Popen("sudo umount /dev/sdd", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
                         subprocess.Popen("sudo umount /dev/sdd1", stdout=subprocess.PIPE, shell=True, universal_newlines=True)
                         sys.exit(0) # On arrête le programme
                         
